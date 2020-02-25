@@ -10,21 +10,17 @@ main =
     Browser.sandbox { init = init, update = update, view = view }
 
 type alias Model =
-    { regex_string : String,
-      text_string : String,
-      regex_regex : Regex.Regex,
-      matched_string : List String
+    { text_string : String,
+        regex_regex : Regex.Regex
     }
 
 type Msg
     = ReadRegex String
     | ReadText String
-    | MatchRegex String
-              
+
 init : Model
 init =
-    { regex_string = "", text_string = "", regex_regex = Regex.never, matched_string = [] }
-
+    { text_string = "", regex_regex = Regex.never }
 
 update : Msg -> Model -> Model
 update msg model =
@@ -33,10 +29,6 @@ update msg model =
             { model | text_string = content }
         ReadRegex str ->
             { model | regex_regex = Maybe.withDefault Regex.never <| Regex.fromString str }
-        MatchRegex str ->
-            { model | matched_string = Regex.split model.regex_regex <| str }
-
-
 
 view : Model -> Html Msg
 view model =
@@ -44,10 +36,20 @@ view model =
     [
         div []
         [ input [ type_ "text", placeholder "Your regex", onInput ReadRegex  ] [],
-          br [] [],
-          input [ type_ "text", placeholder "Your text", onInput ReadText  ] [],
-          br [] [],
-          text("String: " ++ model.text_string)
-         ]
+            br [] [],
+            input [ type_ "text", placeholder "Your text", onInput ReadText  ] [],
+            br [] [],
+            text "Matches",
+            viewMatches model
+        ]
     ]
+
+viewMatches : Model -> Html Msg
+viewMatches model =
+    let
+        matches =
+            Regex.split model.regex_regex model.text_string
+    in
+    div []
+        (List.map (\match -> div [] [ text match ]) <| matches)
 
