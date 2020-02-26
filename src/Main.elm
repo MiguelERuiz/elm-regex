@@ -3,8 +3,11 @@ module Main exposing (..)
 import Browser
 import Html.Attributes exposing (placeholder, type_)
 import Regex
-import Html exposing (Html, br, div, input, text)
+import Html exposing (Html, br, div, h2, input, text)
 import Html.Events exposing (onInput)
+import Bootstrap.Form as Form
+import Bootstrap.Form.Input as Input
+import Bootstrap.Form.Textarea as Textarea
 
 main =
     Browser.sandbox { init = init, update = update, view = view }
@@ -34,14 +37,24 @@ view : Model -> Html Msg
 view model =
     div []
     [
-        div []
-        [ input [ type_ "text", placeholder "Your regex", onInput ReadRegex  ] [],
-            br [] [],
-            input [ type_ "text", placeholder "Your text", onInput ReadText  ] [],
-            br [] [],
-            text "Matches:",
-            viewMatches model
+        Form.form []
+        [ h2 [] [ text "Elm Regex: Try your RegExs in Elm" ]
+        , Form.group []
+            [
+                Input.text [ Input.attrs [ placeholder "Your regex" ], Input.onInput ReadRegex ]
+            ]
+        , br [] []
+        , Form.group []
+            [ Textarea.textarea
+                [ Textarea.id "myarea"
+                , Textarea.rows 3
+                , Textarea.onInput ReadText
+                ]
+            ]
         ]
+        , text "Matches: "
+        , br [] []
+        , viewMatches model
     ]
 
 viewMatches : Model -> Html Msg
