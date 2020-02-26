@@ -28,7 +28,7 @@ update msg model =
         ReadText content ->
             { model | text_string = content }
         ReadRegex str ->
-            { model | regex_regex = Maybe.withDefault Regex.never <| Regex.fromString str }
+            { model | regex_regex = parseRegex str }
 
 view : Model -> Html Msg
 view model =
@@ -39,7 +39,7 @@ view model =
             br [] [],
             input [ type_ "text", placeholder "Your text", onInput ReadText  ] [],
             br [] [],
-            text "Matches",
+            text "Matches:",
             viewMatches model
         ]
     ]
@@ -51,5 +51,13 @@ viewMatches model =
             Regex.split model.regex_regex model.text_string
     in
     div []
-        (List.map (\match -> div [] [ text match ]) <| matches)
+        (List.map (\match -> div [] [ text match, br [] [] ]) <| matches)
+
+parseRegex : String -> Regex.Regex
+parseRegex str =
+    case str of
+        "" ->
+            Regex.never
+        _ ->
+            Maybe.withDefault Regex.never <| Regex.fromString str
 
