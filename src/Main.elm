@@ -1,13 +1,12 @@
 module Main exposing (..)
 
-import Browser
-import Html.Attributes exposing (placeholder, type_)
-import Regex
-import Html exposing (Html, br, div, h2, input, text)
-import Html.Events exposing (onInput)
 import Bootstrap.Form as Form
 import Bootstrap.Form.Input as Input
 import Bootstrap.Form.Textarea as Textarea
+import Browser
+import Html exposing (Html, br, div, h2, text)
+import Html.Attributes exposing (class, placeholder, type_)
+import Regex
 
 main =
     Browser.sandbox { init = init, update = update, view = view }
@@ -35,7 +34,7 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
+    div [ class "d-flex flex-nowrap" ]
     [
         Form.form []
         [ h2 [] [ text "Elm Regex: Try your RegExs in Elm" ]
